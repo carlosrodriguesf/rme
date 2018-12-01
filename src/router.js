@@ -3,33 +3,65 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Posts from '@/views/Posts'
 import Register from '@/views/Register'
+import { isAuthenticated, waitLoad } from '@/common/services/accounts.service'
 
 Vue.use(Router)
 
-export default new Router({
+const ONLY_AUTHENTICATED = 'only-authenticated'
+const ONLY_NOT_AUTHENTICATED = 'only-not-authenticated'
+
+const router = new Router({
   routes: [
     {
       path: '/',
       name: 'login',
-      component: Login
-    },
-    {
-      path: '/posts',
-      name: 'posts',
-      component: Posts
+      component: Login,
+      meta: {
+        authentication: ONLY_NOT_AUTHENTICATED
+      }
     },
     {
       path: '/register',
       name: 'register',
-      component: Register
+      component: Register,
+      meta: {
+        authentication: ONLY_NOT_AUTHENTICATED
+      }
+    },
+    {
+      path: '/posts',
+      name: 'posts',
+      component: Posts,
+      meta: {
+        authentication: ONLY_AUTHENTICATED
+      }
+    },
+    {
+      path: '/example',
+      name: 'posts',
+      component: Posts
     }
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    // }
   ]
 })
+
+router.beforeEach(async (to, from, next) => {
+  await waitLoad()
+
+  const { authentication } = to.meta
+
+  if (ONLY_AUTHENTICATED === authentication && !isAuthenticated()) {
+    return next({
+      path: '/'
+    })
+  }
+
+  if (ONLY_NOT_AUTHENTICATED === authentication && isAuthenticated()) {
+    return next({
+      path: '/posts'
+    })
+  }
+
+  return next()
+})
+
+export default router

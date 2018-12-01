@@ -22,7 +22,10 @@ module.exports = {
     'func-names': 'off',
     'no-continue': 'off',
     'no-reassign-param': 'off',
-    'max-len': 'off'
+    'max-len': 'off',
+    'no-param-reassign': 'off',
+    'no-return-await': 'off',
+    'no-alert': 'off'
   },
   parserOptions: {
     parser: 'babel-eslint'

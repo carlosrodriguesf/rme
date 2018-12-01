@@ -5,6 +5,7 @@
     </v-toolbar>
 
     <v-content>
+      <ModalLoading :open="loading" message="Entrando..."/>
       <v-container fluid fill-height>
         <v-layout justify-center align-start>
           <v-flex text-xs-center>
@@ -26,21 +27,21 @@
 
               <v-layout justify-start align-center>
                 <v-flex text-xs-left>
-                  <a href="javascript:void(0)">
+                  <a href="javascript:void(0)" @click="$router.push('/example')">
                     <font-awesome-icon :icon="['fab', 'facebook']" size="2x"/>
                   </a>
                   &nbsp;
-                  <a>
+                  <a href="javascript:void(0)">
                     <font-awesome-icon :icon="['fab', 'google']" size="2x"/>
                   </a>
                   &nbsp;
-                  <a>
+                  <a href="javascript:void(0)">
                     <font-awesome-icon :icon="['fab', 'github']" size="2x"/>
                   </a>
                 </v-flex>
 
                 <v-flex text-xs-right>
-                  <v-btn @click="$router.push('/posts')" color="primary">
+                  <v-btn @click="login" color="primary">
                     Entrar
                   </v-btn>
                 </v-flex>
@@ -63,22 +64,45 @@
 
 <script>
 import { login } from '../common/services/accounts.service'
+import { ERROR_AUTH_WRONG_PASSWORD, ERROR_AUTH_INVALID_EMAIL } from '@/common/constants'
+import ModalLoading from '@/components/ModalLoading'
 
 export default {
   name: 'Login',
+  components: { ModalLoading },
   data() {
     return {
+      loading: false,
       email: '',
       password: ''
     }
   },
   methods: {
-    login() {
+    async login() {
+      this.loading = true
+
       const { email, password } = this
 
-      console.log('Logando', email, password)
+      try {
+        await login(email, password)
 
-      login(email, password)
+        // this.loading = false
+      } catch (e) {
+        // this.loading = false
+        if (e.code === ERROR_AUTH_WRONG_PASSWORD) {
+          alert('E-mail ou senha inválidos.')
+
+          return
+        }
+
+        if (e.code === ERROR_AUTH_INVALID_EMAIL) {
+          alert('E-mail inválido.')
+
+          return
+        }
+
+        throw e
+      }
     }
   }
 }

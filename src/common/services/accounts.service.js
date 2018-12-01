@@ -1,47 +1,120 @@
-import { auth } from 'firebase'
-import { setAvatar } from '@/common/services/storage.service'
-import { getUserData, addUserData } from '@/common/services/database.service'
+import { auth, firestore, storage } from 'firebase'
+import { base64Data, isBase64 } from '@/common/helpers/base64'
+
+const $data = {
+  user: undefined,
+  listeners: [],
+  onLoadListeners: []
+}
 
 /* eslint-disable-next-line */
 export async function login(email, password) {
-  // try {
-  //   const credentials = await createUserWithEmailAndPassword(
-  //     email, password
-  //   )
-  //
-  //   console.log(credentials)
-  //
-  //   return true
-  // } catch (e) {
-  //   console.log(e)
-  // }
-  //
-  // return false
+  await auth().signInWithEmailAndPassword(
+    email, password
+  )
 }
 
-export async function createAccount(data) {
-  const {
-    avatar, email, password
-  } = data
+export async function setUserAvatar(uid, base64) {
+  const { contentType, content } = base64Data(base64)
+  const path = `${uid}/avatar`
+  const child = await storage()
+    .ref()
+    .child(path)
+
+  await child.putString(content, 'base64', { contentType })
+
+  return await child.getDownloadURL()
+}
+
+export async function saveUserData(user) {
+  const { uid, avatar } = user
+
+  if (isBase64(avatar)) {
+    user.avatar = await setUserAvatar(uid, avatar)
+  }
+
+  delete user.password
+
+  await firestore()
+    .collection('users')
+    .add(user)
+
+  return user
+}
+
+export async function createUser(user) {
+  const { email, password } = user
 
   const ref = await auth()
     .createUserWithEmailAndPassword(email, password)
 
   const { uid } = ref.user
 
-  const downloadURL = await setAvatar(uid, avatar)
+  user.uid = uid
 
-  Object.assign(data, {
-    uid,
-    avatar: downloadURL
+  return await saveUserData(user)
+}
+
+export async function getUserData(uid) {
+  const querySnapshot = await firestore()
+    .collection('users')
+    .where('uid', '==', uid)
+    .get()
+
+  let data = null
+
+  querySnapshot.forEach((doc) => {
+    data = doc.data()
   })
-
-  addUserData(data)
 
   return data
 }
 
-auth()
-  .onAuthStateChanged(async (user) => {
-    console.log('changed', await getUserData(user.uid))
+export function isAuthenticated() {
+  return !!$data.user
+}
+
+export function addUserStateListener(callback) {
+  const { user, listeners } = $data
+
+  listeners.push(callback)
+
+  if (user !== undefined) {
+    callback(user)
+  }
+}
+
+export function waitLoad() {
+  return new Promise((resolve) => {
+    if ($data.user !== undefined) {
+      resolve()
+
+      return
+    }
+
+    $data.onLoadListeners.push(resolve)
   })
+}
+
+export function signOut() {
+  auth().signOut()
+}
+
+async function authStateChangedHandler(user) {
+  const firstTime = $data.user === undefined
+
+  user = user && await getUserData(user.uid)
+
+  $data.user = user
+
+  $data.listeners.forEach(callback => callback(user))
+
+  if (firstTime) {
+    $data.onLoadListeners.forEach(resolve => resolve())
+
+    delete $data.onLoadListeners
+  }
+}
+
+
+auth().onAuthStateChanged(authStateChangedHandler)
