@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/rme/precache-manifest.e06e291067af8c9326d14ccbee452c1d.js"
+  "/precache-manifest.004d4ff236ea592ac2431a7f3757404f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "remember.me.n"});
