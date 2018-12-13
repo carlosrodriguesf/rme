@@ -6,12 +6,13 @@
 
     <v-content>
       <ModalLoading :open="loading" message="Entrando..."/>
+
       <v-container fluid fill-height>
         <v-layout justify-center align-start>
           <v-flex text-xs-center>
             <v-icon size="10em">supervised_user_circle</v-icon>
 
-            <v-form ref="form">
+            <v-form ref="form" @submit="login">
               <v-text-field v-model="email"
                             prepend-inner-icon="alternate_email"
                             label="E-mail"
@@ -41,7 +42,7 @@
                 </v-flex>
 
                 <v-flex text-xs-right>
-                  <v-btn @click="login" color="primary">
+                  <v-btn type="submit" color="primary">
                     Entrar
                   </v-btn>
                 </v-flex>
@@ -63,7 +64,7 @@
 </template>
 
 <script>
-import { login } from '../common/services/accounts.service'
+import { login } from '../common/libs/api/accounts'
 import { ERROR_AUTH_WRONG_PASSWORD, ERROR_AUTH_INVALID_EMAIL } from '@/common/constants'
 import ModalLoading from '@/components/ModalLoading'
 
@@ -78,7 +79,9 @@ export default {
     }
   },
   methods: {
-    async login() {
+    async login(e) {
+      e.preventDefault()
+
       this.loading = true
 
       const { email, password } = this
@@ -87,21 +90,21 @@ export default {
         await login(email, password)
 
         // this.loading = false
-      } catch (e) {
+      } catch (err) {
         // this.loading = false
-        if (e.code === ERROR_AUTH_WRONG_PASSWORD) {
+        if (err.code === ERROR_AUTH_WRONG_PASSWORD) {
           alert('E-mail ou senha inválidos.')
 
           return
         }
 
-        if (e.code === ERROR_AUTH_INVALID_EMAIL) {
+        if (err.code === ERROR_AUTH_INVALID_EMAIL) {
           alert('E-mail inválido.')
 
           return
         }
 
-        throw e
+        throw err
       }
     }
   }

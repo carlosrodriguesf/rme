@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Posts from '@/views/Posts'
 import Register from '@/views/Register'
-import { isAuthenticated, waitLoad } from '@/common/services/accounts.service'
+import { isAuthenticated, waitLoad } from '@/common/libs/api/accounts'
 
 Vue.use(Router)
 

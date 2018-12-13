@@ -1,5 +1,5 @@
 import { auth, firestore, storage } from 'firebase'
-import { base64Data, isBase64 } from '@/common/helpers/base64'
+import { base64Data, isBase64 } from '../../helpers/base64'
 
 const $data = {
   user: undefined,
@@ -7,11 +7,11 @@ const $data = {
   onLoadListeners: []
 }
 
-/* eslint-disable-next-line */
 export async function login(email, password) {
-  await auth().signInWithEmailAndPassword(
-    email, password
-  )
+  await auth()
+    .signInWithEmailAndPassword(
+      email, password
+    )
 }
 
 export async function setUserAvatar(uid, base64) {
@@ -31,6 +31,8 @@ export async function saveUserData(user) {
 
   if (isBase64(avatar)) {
     user.avatar = await setUserAvatar(uid, avatar)
+  } else {
+    delete user.avatar
   }
 
   delete user.password

@@ -17,9 +17,10 @@
 
 <script>
 import SidebarContent from '../components/SidebarContent'
-import posts from '../0_examples/posts'
 import PostCard from '../components/PostCard'
 import PostCardList from '../components/PostCardList'
+import { mapGetters } from 'vuex'
+import { LOAD_POSTS } from '@/store/modules/posts'
 
 export default {
   name: 'Posts',
@@ -30,25 +31,13 @@ export default {
   },
   data: () => ({
     drawer: null,
-    source: 'ss',
-    posts,
-    cards: [
-      {
-        title: 'Pre-fab homes',
-        src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        flex: 12
-      },
-      {
-        title: 'Favorite road trips',
-        src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg',
-        flex: 6
-      },
-      {
-        title: 'Best airlines',
-        src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg',
-        flex: 6
-      }
-    ]
-  })
+    source: 'ss'
+  }),
+  computed: {
+    ...mapGetters('posts', ['posts'])
+  },
+  mounted() {
+    this.$store.dispatch(`posts/${LOAD_POSTS}`)
+  }
 }
 </script>

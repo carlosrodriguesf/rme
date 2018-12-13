@@ -12,7 +12,7 @@ export default [
       }, {
         id: 2,
         name: 'Luana Moreira',
-        usermane: 'lua',
+        username: 'lua',
         avatar: 'https://picsum.photos/200/300/?lua'
       }
     ],

@@ -10,10 +10,10 @@
 
 <script>
 import InputImage from '@/components/InputImage'
-import { createUser } from '@/common/services/accounts.service'
+import RegisterToolbar from '@/components/@Register/RegisterToolbar'
+import RegisterForm from '@/components/@Register/RegisterForm'
 import { ERROR_AUTH_USER_ALREADY_IN_USE } from '@/common/constants'
-import RegisterToolbar from '@/components/view-register/RegisterToolbar'
-import RegisterForm from '@/components/view-register/RegisterForm'
+import { createUser } from '@/common/libs/api/accounts'
 
 function burnError(e) {
   if (e.code === ERROR_AUTH_USER_ALREADY_IN_USE) {

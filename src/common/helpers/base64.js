@@ -5,10 +5,14 @@ export function isBase64(base64) {
 }
 
 export function base64Data(base64) {
-  const result = BASE_64_REGEX.exec(base64)
+  let result = BASE_64_REGEX.exec(base64)
 
   if (!result) {
-    throw new Error('Invalid base64')
+    result = BASE_64_REGEX.exec(base64)
+  }
+
+  if (!result) {
+    throw new Error(`Invalid base64: ${base64}`)
   }
 
   const { 0: replace, 1: contentType } = result

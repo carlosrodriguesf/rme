@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { signOut } from '@/common/services/accounts.service'
+import { signOut } from '@/common/libs/api/accounts'
 
 export default {
   name: 'SidebarContent',

@@ -1,4 +1,4 @@
-import './3rd/fontawesome'
+import './plugins/fontawesome'
 
 import './plugins/vuetify'
 import './plugins/vue-croppa'
@@ -11,8 +11,9 @@ import App from './App.vue'
 
 import router from './router'
 import store, { SET_BOOTED } from './store'
-import { addUserStateListener } from '@/common/services/accounts.service'
-import { SET_USER } from '@/store/modules/users.module'
+import { addUserStateListener } from '@/common/libs/api/accounts'
+import { SET_USER } from '@/store/modules/users'
+import { savePost } from '@/common/libs/api/posts'
 
 Vue.config.productionTip = false
 
@@ -28,3 +29,5 @@ addUserStateListener((user) => {
 
   router.push(user ? '/posts' : '/')
 })
+
+window.addPost = savePost

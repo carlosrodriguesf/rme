@@ -1,21 +1,12 @@
 <template>
-  <v-list subheader>
+  <div>
     <v-subheader>{{title}}</v-subheader>
-    <v-list-tile v-for="user in users" :key="user.id" avatar>
-      <v-list-tile-avatar>
+    <v-flex>
+      <v-avatar size="26" v-for="user in users" :key="user.id">
         <img :src="user.avatar" :alt="`${user.name} Avatar`">
-      </v-list-tile-avatar>
-
-      <v-list-tile-content>
-        <v-list-tile-title v-html="user.name"/>
-        <v-list-tile-sub-title v-html="user.username"/>
-      </v-list-tile-content>
-
-      <v-list-tile-action>
-        <v-icon color="primary">delete</v-icon>
-      </v-list-tile-action>
-    </v-list-tile>
-  </v-list>
+      </v-avatar>
+    </v-flex>
+  </div>
 </template>
 
 <script>
@@ -27,3 +18,16 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+  .v-avatar {
+    margin: {
+      bottom: 10px;
+      right: 10px;
+    }
+
+    &:first-child {
+      margin-left: 10px;
+    }
+  }
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog :value="show" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog v-model="show" fullscreen hide-overlay transition="dialog-bottom-transition">
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon dark @click="$emit('change', false)">

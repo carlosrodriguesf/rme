@@ -1,6 +1,6 @@
 <template>
   <v-form ref="form" v-model="formValid">
-    <InputImage v-model="showInputImage" @save="setAvatar"/>
+    <InputImage v-if="renderInputImage" v-model="showInputImage" @save="setAvatar"/>
 
     <v-container grid-list-md text-xs-center>
       <v-layout row wrap>
@@ -71,6 +71,7 @@ export default {
   components: { InputImage },
   data() {
     return {
+      renderInputImage: false,
       showInputImage: false,
       formValid: false,
       avatar: null,
@@ -126,6 +127,11 @@ export default {
     currentAvatar() {
       return this.avatar || defaultAvatar
     }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.renderInputImage = true
+    }, 500)
   }
 }
 </script>
