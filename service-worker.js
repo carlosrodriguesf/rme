@@ -14,10 +14,12 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.5a356285ff1b0fcba3ed954bb2c9a5e9.js"
+  "/precache-manifest.dce08c6fb4c5888d01431dbc0c5237f0.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "remember.me.n"});
+
+workbox.skipWaiting();
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
