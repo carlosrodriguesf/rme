@@ -6,18 +6,20 @@
           {{post.title}}
         </div>
         <div>
-          {{post.content}}
+          {{post.content.substring(0, 100)}}
+
+          <span v-if="post.content.length > 100">...</span>
         </div>
       </div>
     </v-card-title>
 
     <v-divider/>
 
-    <UserList title="Solicitantes" :users="post.from"/>
+    <UserList title="By:" :users="post.from"/>
 
     <v-divider/>
 
-    <UserList title="Responsáveis" :users="post.to"/>
+    <UserList title="To:" :users="post.to"/>
 
     <v-divider/>
 
